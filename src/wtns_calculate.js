@@ -17,17 +17,17 @@
     along with snarkJS. If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as fastFile from "fastfile";
 import { WitnessCalculatorBuilder } from "circom_runtime";
 import * as wtnsUtils from "./wtns_utils.js";
 import * as binFileUtils from "@iden3/binfileutils";
 import { utils } from "ffjavascript";
+import {fastFileCreateOverride, fastFileReadExisting} from "./fastfile/fastfile.js";
 const { unstringifyBigInts} = utils;
 
 export default async function wtnsCalculate(_input, wasmFileName, wtnsFileName, options) {
     const input = unstringifyBigInts(_input);
 
-    const fdWasm = await fastFile.readExisting(wasmFileName);
+    const fdWasm = await fastFileReadExisting(wasmFileName);
     const wasm = await fdWasm.read(fdWasm.totalSize);
     await fdWasm.close();
 
@@ -40,7 +40,7 @@ export default async function wtnsCalculate(_input, wasmFileName, wtnsFileName, 
         await wtnsUtils.writeBin(fdWtns, w, wc.prime);
         await fdWtns.close();
     } else {
-        const fdWtns = await fastFile.createOverride(wtnsFileName);
+        const fdWtns = await fastFileCreateOverride(wtnsFileName);
 
         const w = await wc.calculateWTNSBin(input);
 

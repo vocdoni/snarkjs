@@ -4,7 +4,7 @@ import {fastFileCreateOverride, fastFileReadExisting} from "../fastfile/fastfile
 
 export async function readBinFile(fileName, type, maxVersion, cacheSize, pageSize) {
 
-    const fd = await fastFileReadExisting(fileName, cacheSize, pageSize);
+    const fd = await fastFileReadExisting(fileName.data || fileName, cacheSize, pageSize);
 
     const b = await fd.read(4);
     let readedType = "";

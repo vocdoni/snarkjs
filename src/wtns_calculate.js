@@ -19,9 +19,9 @@
 
 import { WitnessCalculatorBuilder } from "circom_runtime";
 import * as wtnsUtils from "./wtns_utils.js";
-import * as binFileUtils from "@iden3/binfileutils";
 import { utils } from "ffjavascript";
 import {fastFileCreateOverride, fastFileReadExisting} from "./fastfile/fastfile.js";
+import { createBinFile } from "./binfileutils/binfileutils.js";
 const { unstringifyBigInts} = utils;
 
 export default async function wtnsCalculate(_input, wasmFileName, wtnsFileName, options) {
@@ -35,7 +35,7 @@ export default async function wtnsCalculate(_input, wasmFileName, wtnsFileName, 
     if (wc.circom_version() == 1) {
         const w = await wc.calculateBinWitness(input);
 
-        const fdWtns = await binFileUtils.createBinFile(wtnsFileName, "wtns", 2, 2);
+        const fdWtns = await createBinFile(wtnsFileName, "wtns", 2, 2);
 
         await wtnsUtils.writeBin(fdWtns, w, wc.prime);
         await fdWtns.close();

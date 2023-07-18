@@ -44,7 +44,7 @@
 // PointsH(9)
 // Contributions(10)
 
-import * as binFileUtils from "@iden3/binfileutils";
+import {startReadUniqueSection, endReadSection, readBigInt} from "./binfileutils/binfileutils.js";
 
 import { getCurveFromQ as getCurve } from "./curves.js";
 import { log2 } from "./misc.js";
@@ -66,9 +66,9 @@ async function readG2(fd, curve, toObject) {
 export async function readHeader(fd, sections, toObject) {
     // Read Header
     /////////////////////
-    await binFileUtils.startReadUniqueSection(fd, sections, 1);
+    await startReadUniqueSection(fd, sections, 1);
     const protocolId = await fd.readULE32();
-    await binFileUtils.endReadSection(fd);
+    await endReadSection(fd);
 
     if (protocolId !== GROTH16_PROTOCOL_ID) {
         throw new Error("Protocol not supported: ");
@@ -81,14 +81,14 @@ export async function readHeader(fd, sections, toObject) {
 
     // Read Groth Header
     /////////////////////
-    await binFileUtils.startReadUniqueSection(fd, sections, 2);
+    await startReadUniqueSection(fd, sections, 2);
     const n8q = await fd.readULE32();
     zkey.n8q = n8q;
-    zkey.q = await binFileUtils.readBigInt(fd, n8q);
+    zkey.q = await readBigInt(fd, n8q);
 
     const n8r = await fd.readULE32();
     zkey.n8r = n8r;
-    zkey.r = await binFileUtils.readBigInt(fd, n8r);
+    zkey.r = await readBigInt(fd, n8r);
     zkey.curve = await getCurve(zkey.q);
     zkey.nVars = await fd.readULE32();
     zkey.nPublic = await fd.readULE32();
@@ -100,7 +100,7 @@ export async function readHeader(fd, sections, toObject) {
     zkey.vk_gamma_2 = await readG2(fd, zkey.curve, toObject);
     zkey.vk_delta_1 = await readG1(fd, zkey.curve, toObject);
     zkey.vk_delta_2 = await readG2(fd, zkey.curve, toObject);
-    await binFileUtils.endReadSection(fd);
+    await endReadSection(fd);
 
     return zkey;
 }

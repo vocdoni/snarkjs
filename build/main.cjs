@@ -191,7 +191,7 @@ async function fastFileReadExisting(o, b, c) {
             type: "mem",
             data: o
         };
-    } else {
+    } else if (!o || o.type !== "mem") {
         throw new Error("Invalid FastFile type, should be a Uint8Array");
     }
 

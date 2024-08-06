@@ -36,8 +36,8 @@
   },
   "dependencies": {
     "bfj": "^7.0.2",
-    "circom_runtime": "0.1.23",
-    "ffjavascript": "0.2.59"
+    "circom_runtime": "0.1.25",
+    "ffjavascript": "0.3.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
